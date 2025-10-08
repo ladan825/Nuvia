@@ -1,5 +1,15 @@
 {
-  "imports": {
-    "npm:": "npm:"
+  "lint": {
+    "include": [
+      "./index.ts"
+    ]
+  },
+  "fmt": {
+    "include": [
+      "./index.ts"
+    ]
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom"]
   }
 }

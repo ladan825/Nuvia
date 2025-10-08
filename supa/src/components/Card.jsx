@@ -25,15 +25,15 @@ export default function Card({ drink }) {
   })
 
   return (
-    <div className="drink-card p-4 mb-4 flex flex-col gap-2 ">
-
-      {/* Image preview or placeholder */}
-      <div className="w-full h-full overflow-hidden rounded mb-2 flex items-center justify-center">
+    <div className="drink-card p-4 mb-4 flex flex-col gap-2 bg-white rounded-lg shadow-sm">
+      
+      {/* ✅ Clean full image display */}
+      <div className="w-full aspect-[4/5] rounded-lg overflow-hidden flex items-center justify-center bg-transparent">
         {drink.image_url ? (
           <img
             src={drink.image_url}
             alt={drink.title}
-            className="object-cover object-center w-full h-full"
+            className="w-full h-full object-contain"
           />
         ) : (
           <span className="text-gray-500 text-sm">No Image</span>
@@ -41,7 +41,7 @@ export default function Card({ drink }) {
       </div>
 
       {/* Drink Info */}
-      <h3 className="text-xl font-bold">{drink.title}</h3>
+      <h3 className="text-xl font-bold mt-2">{drink.title}</h3>
       <div className="rating font-semibold">{drink.rating}</div>
 
       {/* Action Buttons */}

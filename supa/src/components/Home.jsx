@@ -35,7 +35,7 @@ export default function Home() {
   })
 
   return (
-<div>
+<div className='overflow-x-hidden'>
   <Land/>
   <Hero />
   <Marquee />
@@ -43,7 +43,7 @@ export default function Home() {
     <About />
     <Month />
     <div className="p-6">
-      <h2 className="text-6xl text-black font-bold mt-10 flex justify-center">COLOURFULL FLAVOURS</h2>
+      <h2 className="text-4xl sm:text-5xl lg:text-6xl text-black font-bold mt-10 flex justify-center">COLOURFULL FLAVOURS</h2>
 
       <div className="flex gap-4 mt-6">
         <button
@@ -71,7 +71,7 @@ export default function Home() {
       {isLoading && <p>Loading drinks...</p>}
       {error && <p>Error: {error.message}</p>}
 
-      <div className="drink-grid">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {drinks?.map(drink => (
           <Card key={drink.id} drink={drink} addToCart={addToCart}/>
         ))}

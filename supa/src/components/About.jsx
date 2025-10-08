@@ -16,9 +16,9 @@ export default function About() {
         <div className="mt-12 lg:flex lg:items-center lg:gap-16">
           <div className="lg:w-1/2">
             <img 
-              src= ""
+              src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80"
               alt="A barista pouring coffee" 
-              className="rounded-lg shadow-xl" 
+              className="rounded-lg shadow-xl w-full h-auto" 
             />
           </div>
           <div className="mt-8 lg:mt-0 lg:w-1/2">
