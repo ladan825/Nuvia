@@ -26,7 +26,7 @@ const Land = () => {
             key={drink.id}
             src={drink.image_url}
             alt={drink.title}
-            className="w-56 h-56 sm:w-56 sm:h-56 md:w-[24rem] md:h-[24rem] object-contain"
+            className="w-28 h-28 sm:w-56 sm:h-56 md:w-[24rem] md:h-[24rem] object-contain"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.8, delay: index * 0.2 }}
