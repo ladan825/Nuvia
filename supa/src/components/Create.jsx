@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext' // <-- make sure you import this
 
 export default function Create() {
   const [title, setTitle] = useState('')
@@ -9,27 +10,35 @@ export default function Create() {
   const [rating, setRating] = useState('')
   const [imageFile, setImageFile] = useState(null)
   const [formError, setFormError] = useState(null)
+  const [accessDenied, setAccessDenied] = useState(false)
 
+  const { user } = useAuth() // get the logged in user
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
+  // ✅ Only allow your email
+  useEffect(() => {
+    if (!user) return
+    if (user.email !== 'abbasladan825@gmail.com') {
+      setAccessDenied(true)
+    }
+  }, [user])
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: async (newDrink) => {
-      // 1. Upload image if it exists
       let image_url = null
 
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop()
         const fileName = `${Date.now()}.${fileExt}`
 
-        const { data: uploadData, error: uploadError } = await supabase
+        const { error: uploadError } = await supabase
           .storage
-          .from('images') // your bucket name
+          .from('images')
           .upload(fileName, imageFile)
 
         if (uploadError) throw new Error('Error uploading image')
 
-        // 2. Get public URL
         const { data: publicUrlData } = supabase
           .storage
           .from('images')
@@ -38,7 +47,6 @@ export default function Create() {
         image_url = publicUrlData.publicUrl
       }
 
-      // 3. Insert drink with image_url
       const { data, error } = await supabase
         .from('Drinks')
         .insert([{ ...newDrink, image_url }])
@@ -47,7 +55,6 @@ export default function Create() {
       if (error) throw new Error(error.message)
       return data
     },
-
     onSuccess: () => {
       queryClient.invalidateQueries(['Drinks'])
       navigate('/')
@@ -56,19 +63,22 @@ export default function Create() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
     if (!title || !method || !rating) {
       setFormError('All fields are required.')
       return
     }
-
     setFormError(null)
+    mutate({ title, method, rating })
+  }
 
-    mutate({
-      title,
-      method,
-      rating,
-    })
+  // 🚫 Block access
+  if (accessDenied) {
+    return (
+      <div className="text-center mt-20">
+        <h2 className="text-xl font-semibold text-red-600">Access Denied</h2>
+        <p className="text-gray-600">Only the admin can create new drinks.</p>
+      </div>
+    )
   }
 
   return (
@@ -82,8 +92,8 @@ export default function Create() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Coffee, Tea, etc."
             className="border p-2 w-full"
+            placeholder="Coffee, Tea, etc."
           />
         </label>
 
@@ -94,7 +104,7 @@ export default function Create() {
             onChange={(e) => setMethod(e.target.value)}
             placeholder="Describe how to make it"
             className="border p-2 w-full"
-          ></textarea>
+          />
         </label>
 
         <label>

@@ -46,21 +46,23 @@ export default function Card({ drink }) {
 
       {/* Action Buttons */}
       <div className="flex gap-4 mt-2">
-        <Link
+        
+      {/*   
+      <Link
           to={`/${drink.id}`}
           className="inline-flex items-center gap-1 text-blue-500 hover:underline"
         >
           <Edit className="w-4 h-4" />
         </Link>
-
-        <button
+      <button
           onClick={() => deleteDrink()}
           disabled={isPending}
           className="inline-flex items-center gap-1 text-red-500 hover:underline"
         >
           <Trash2 className="w-4 h-4" />
           {isPending && 'Deleting...'}
-        </button>
+        </button> */}
+      
 
         <Link
           to={`/product/${drink.id}`}

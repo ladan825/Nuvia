@@ -50,9 +50,7 @@ const Nav = () => {
       {/* CENTER: Brand Name */}
       <motion.h1
         className="text-4xl sm:text-6xl tracking-tight text-black select-none"
-        style={{
-          fontFamily: "'Poppins', sans-serif",
-        }}
+        style={{ fontFamily: "'Poppins', sans-serif" }}
         whileHover={{ scale: 1.05 }}
         transition={{ type: 'spring', stiffness: 200 }}
       >
@@ -62,6 +60,16 @@ const Nav = () => {
 
       {/* RIGHT: Cart + Account */}
       <div className="flex items-center gap-4 sm:gap-6 text-black">
+        {/* Only show Create button for admin (you) */}
+        {user && user.email === 'abbasladan825@gmail.com' && (
+          <Link
+            to="/create"
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition"
+          >
+            + Create
+          </Link>
+        )}
+
         {/* Cart */}
         <div className="flex gap-3 sm:gap-4">
           <motion.div
