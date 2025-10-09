@@ -26,7 +26,7 @@ const Land = () => {
             key={drink.id}
             src={drink.image_url}
             alt={drink.title}
-            className="w-56 h-56 sm:w-72 sm:h-72 md:w-[32rem] md:h-[32rem] object-contain"
+            className="w-56 h-56 sm:w-56 sm:h-56 md:w-[24rem] md:h-[24rem] object-contain"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.8, delay: index * 0.2 }}
@@ -36,7 +36,7 @@ const Land = () => {
     );
 
     return ( 
-        <div className="landing relative w-full h-screen flex flex-col items-center justify-center overflow-hidden pb-20">
+        <div className="landing relative w-full h-screen flex flex-col items-center justify-center overflow-hidden pb-30">
             
             {/* The animated text that is always present */}
             <motion.h1 

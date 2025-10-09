@@ -48,7 +48,7 @@ export default function ProductDetail() {
       
       {/* LEFT: Drink Image */}
       <div className="w-full md:w-1/2 flex justify-center p-4">
-        <img src={drink.image_url} alt={drink.title} className="w-full max-w-lg object-contain pt-2" />
+        <img src={drink.image_url} alt={drink.title} className="w-full max-w-lg object-contain pt-5" />
       </div>
 
       {/* RIGHT: Product Details and Buying Options */}
