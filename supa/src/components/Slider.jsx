@@ -55,7 +55,7 @@ export default function Slider() {
               alt={drink.title}
               className="w-64 sm:w-80 md:w-[28rem] h-auto object-cover"
             />
-            <div className="flex flex-col items-center md:items-start text-center md:text-left">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left pb-4">
               <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">{drink.title}</h2>
               <p className="mb-6 max-w-md text-sm sm:text-base">{drink.method}</p>
               <Link

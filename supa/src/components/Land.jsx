@@ -36,7 +36,7 @@ const Land = () => {
     );
 
     return ( 
-        <div className="landing relative w-full h-screen flex flex-col items-center justify-center overflow-hidden pb-30">
+        <div className="landing relative w-full h-screen flex flex-col items-center justify-center overflow-hidden pb-20">
             
             {/* The animated text that is always present */}
             <motion.h1 

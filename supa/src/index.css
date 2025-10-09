@@ -96,11 +96,12 @@ nav h1 {
     /* Strawberry red */
     #d62e2e 65%,
     #d62e2e 75%,
+    
     /* Blueberry - thicker bottom */
     #3a4db7 90%,
     #2a3796 100%
   );
-  height: 160vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -42,20 +42,20 @@ export default function ProductDetail() {
   if (error) return <p>{error.message}</p>;
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-8"
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen p-6"
       // ✅ This is the correct way to get the background color from the database
       style={{ backgroundColor: drink?.color_hex || 'transparent' }}>
       
       {/* LEFT: Drink Image */}
       <div className="w-full md:w-1/2 flex justify-center p-4">
-        <img src={drink.image_url} alt={drink.title} className="w-full max-w-lg object-contain" />
+        <img src={drink.image_url} alt={drink.title} className="w-full max-w-lg object-contain pt-2" />
       </div>
 
       {/* RIGHT: Product Details and Buying Options */}
       <div className="w-full md:w-1/2 p-4 text-white">
         <h2 className="text-4xl font-extrabold mb-2">{drink.title}</h2>
         <p className="text-2xl font-semibold mb-4">
-    ${drink.price ? drink.price.toFixed(2) : 'Price unavailable'}</p>
+    ₦{drink.price ? drink.price.toFixed(2) : 'Price unavailable'}</p>
         <p className="mb-6 max-w-md">{drink.method}</p>
 
         <div className="flex items-center gap-4 mb-6">

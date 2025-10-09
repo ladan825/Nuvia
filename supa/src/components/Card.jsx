@@ -68,6 +68,7 @@ export default function Card({ drink }) {
           to={`/product/${drink.id}`}
           className="inline-flex items-center gap-1 text-blue-500 hover:underline"
         >
+          
           <ShoppingCart className="w-4 h-4" />
         </Link>
       </div>
