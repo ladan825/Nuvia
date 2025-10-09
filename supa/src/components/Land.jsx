@@ -41,8 +41,8 @@ const Land = () => {
             {/* The animated text that is always present */}
             <motion.h1 
                 className="text-6xl md:text-8xl font-bold absolute z-0 text-white"
-                initial={{ y: 150, opacity: 0 }}
-                animate={{ y: -190, opacity: 1 }}
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: -150, opacity: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut", delay: 1.5 }} 
             >
                 Drink Differently
