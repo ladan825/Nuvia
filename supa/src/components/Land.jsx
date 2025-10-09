@@ -20,7 +20,9 @@ const Land = () => {
     const drinkContent = (isLoading) ? (
         <p className="text-white text-lg">Loading drinks...</p>
     ) : (
-        <div className="flex flex-row -space-x-79 justify-center items-center mt-20 z-10">
+        <div className="flex flex-row -space-x-79 justify-center items-center mt-20 z-10 sm:flex-row ">
+            
+    
     {drinks?.map((drink, index) => (
         <motion.img 
             key={drink.id}
