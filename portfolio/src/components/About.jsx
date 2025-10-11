@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const About = () => {
   return (
-    <section className="py-20 px-6 relative bg-white">
+    <section className="py-20 px-6 relative ">
       <div className="container mx-auto max-w-5xl">
         <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
           About <span className="text-violet-400">Me</span>
@@ -58,7 +58,7 @@ const About = () => {
             viewport={{ once: true }}
           >
             {/* Card 1 */}
-            <div className="p-6 border-2 border-indigo-500 rounded-xl bg-white shadow-sm hover:shadow-md transition">
+            <div className="p-6 border-2 border-indigo-500 rounded-xl  shadow-sm hover:shadow-md transition">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-indigo-100">
                   <Code2 className="h-6 w-6 text-indigo-700" />
@@ -74,7 +74,7 @@ const About = () => {
             </div>
 
             {/* Card 2 */}
-            <div className="p-6 border-2 border-indigo-500 rounded-xl bg-white shadow-sm hover:shadow-md transition">
+            <div className="p-6 border-2 border-indigo-500 rounded-xl  shadow-sm hover:shadow-md transition">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-indigo-100">
                   <User className="h-6 w-6 text-indigo-700" />
@@ -90,7 +90,7 @@ const About = () => {
             </div>
 
             {/* Card 3 */}
-            <div className="p-6 border-2 border-indigo-500 rounded-xl bg-white shadow-sm hover:shadow-md transition sm:col-span-2">
+            <div className="p-6 border-2 border-indigo-500 rounded-xl shadow-sm hover:shadow-md transition sm:col-span-2">
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-indigo-100">
                   <Briefcase className="h-6 w-6 text-indigo-700" />
