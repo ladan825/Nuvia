@@ -1,33 +1,35 @@
-import { Component } from 'react';
+// Add the missing React import here!
+import React from 'react'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Component/layout/Navbar';
-import Dashboard from './Component/dashboard/Dashboard';
-import ProjectDetail from './Component/projects/ProjectDetail';
-import SignIn from './Component/auth/SignIn';
-import SignUp from './Component/auth/SignUp';
-import CreateProject from './Component/projects/CreateProject';
-// ✅ make sure this is capitalized!
+import Navbar from './Component/Navbar';
+import Dashboard from './Component/Home';
+import ProjectDetail from './Component/ProjectDetail';
+import SignIn from './Component/SignIn';
+import SignUp from './Component/SignUp';
+import Home from './Component/Home';
+import Dash from './Component/Dash';
+import CreateProject from './Component/CreateProject';
 
-class App extends Component {
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <Navbar />
-          <div className="content">
-            <Routes>
-              {/* 🟢 Public Routes */}
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/create" element={<CreateProject />} />
-                <Route path="/project/:id" element={<ProjectDetail />} />
-            </Routes>
-          </div>
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="content">
+          <Routes>
+            {/* Public Routes for now */}
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/project/:id" element={<ProjectDetail />} />
+            <Route path="/dash" element={<Dash/>} />
+            <Route path="/create" element={<CreateProject />} />
+
+          </Routes>
         </div>
-      </Router>
-    );
-  }
+      </div>
+    </Router>
+  );
 }
 
 export default App;

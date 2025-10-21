@@ -4,8 +4,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color:black !important;
-  background-color: #f7f6f6;
+  color:rgb(255, 255, 255) !important;
+  background-color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,9 +18,7 @@ a {
   color: #262628;
   text-decoration: none;
 }
-a:hover {
-  color: #535bf2;
-}
+
 
 body {
   margin: 0;
@@ -28,6 +26,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: black !important;
+  background-image: url("doddle.jpg");
+  background-size: cover;
 }
 
 h1 {
@@ -42,7 +42,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #121212;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -56,6 +56,7 @@ button:focus-visible {
 
 .nav-wrapper {
   width: 100vw;
+  background: #000;
 }
 
 input, textarea, select {
@@ -68,4 +69,16 @@ input, textarea, select {
   border-radius: 4px;
   font-family: inherit;
   font-size: 16px;
+}
+.logo {
+  font-family:fantasy ;
+  font-size: 50px;
+}
+
+.card {
+  width:50vw;
+  height: auto;
+  border-radius: 8px;
+  padding: 5px;
+  margin: 20px;
 }
