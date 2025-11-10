@@ -18,7 +18,7 @@ const Projects = () => {
       image: "snar.png", 
       tags: ["React", "Vite", "Supabase", "TailwindCss", "React-Router"],
       // Use your actual live URL here if you have one
-      liveDemo: "https://snar-drab.vercel.app", 
+      liveDemo: "https://snar-six.vercel.app/", 
     },
   ];
 
