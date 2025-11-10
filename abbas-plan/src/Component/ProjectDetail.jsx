@@ -58,32 +58,32 @@ const ProjectDetails = () => {
     }
   }
 
-  if (loading) return <div className="container center">Loading...</div>
+  if (loading) return <div className="">Loading...</div>
 
   const canEdit = user && (user.email === project.author_email || user.email === ADMIN_EMAIL)
 
   return project ? (
-    <div className="container section project-details">
-      <div className="card z-depth-0">
-        <div className="card-content">
+    <div className="">
+      <div className="">
+        <div className="card">
 
           {isEditing ? (
             <>
               <input
                 type="text"
-                className="input-field"
+                className=""
                 value={editedProject.title}
                 onChange={(e) => setEditedProject({ ...editedProject, title: e.target.value })}
               />
               <textarea
-                className="materialize-textarea"
+                className=""
                 value={editedProject.content}
                 onChange={(e) => setEditedProject({ ...editedProject, content: e.target.value })}
               />
             </>
           ) : (
             <>
-              <span className="card-title" onClick={() => canEdit && setIsEditing(true)}>
+              <span className="" onClick={() => canEdit && setIsEditing(true)}>
                 {project.title}
               </span>
               <p onClick={() => canEdit && setIsEditing(true)}>
@@ -93,22 +93,22 @@ const ProjectDetails = () => {
           )}
         </div>
 
-        <div className="card-action grey lighten-4 grey-text">
+        <div className="">
           <div>Posted by {project.author_firstname} {project.author_lastname}</div>
           <div>{new Date(project.created_at).toDateString()}</div>
         </div>
 
         {canEdit && (
-          <div className="card-action">
+          <div className="card">
             {isEditing ? (
               <>
-                <button className="btn green" onClick={handleSave}>Save</button>
-                <button className="btn grey" onClick={() => setIsEditing(false)}>Cancel</button>
+                <button className="" onClick={handleSave}>Save</button>
+                <button className="" onClick={() => setIsEditing(false)}>Cancel</button>
               </>
             ) : (
               <>
-                <button className="btn red" onClick={handleDelete}>Delete</button>
-                <button className="btn blue" onClick={() => setIsEditing(true)}>Edit</button>
+                <button className="" onClick={handleDelete}>Delete</button>
+                <button className="" onClick={() => setIsEditing(true)}>Edit</button>
               </>
             )}
           </div>
@@ -116,7 +116,7 @@ const ProjectDetails = () => {
       </div>
     </div>
   ) : (
-    <div className="container center">Project not found.</div>
+    <div className="">Project not found.</div>
   )
 }
 

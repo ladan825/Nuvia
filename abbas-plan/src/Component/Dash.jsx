@@ -43,10 +43,10 @@ const Dash = () => {
     setProjects((prev) => prev.filter((proj) => proj.id !== id));
   };
 
-  if (loading) return <div className="container center">Loading...</div>;
+  if (loading) return <div className=" center">Loading...</div>;
 
   return (
-    <div className="container">
+    <div className="">
       <h4>Your Projects</h4>
       {projects.length ? (
         projects.map((project) => (

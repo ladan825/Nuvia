@@ -1,7 +1,9 @@
 {
-    "deno.enable": true,
-    "deno.unstable": true,
-    "deno.enablePaths": ["supabase/functions"],
-    "deno.config": "./supabase/functions/verify-paystack-payment/deno.json",
-    "deno.path": "C:\\Users\\USER PC\\scoop\\shims\\deno.exe" 
+  "deno.enable": true,
+  "deno.unstable": true, 
+  "deno.enablePaths": [
+    "supa/supabase/functions"
+  ],
+  "deno.config": "./supa/supabase/functions/verify-paystack-payment/deno.json",
+  "deno.path": "C:\\Users\\USER PC\\scoop\\shims\\deno.exe" 
 }

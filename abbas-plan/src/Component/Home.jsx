@@ -26,11 +26,11 @@ const Home = () => {
     fetchProjects()
   }, [])
   return (
-    <div className="dashboard container">
+    <div className="dashboard">
       <div className="row">
         <div className="col s12 m6">
           {loading && <p>Loading projects...</p>}
-          {error && <p className="red-text">Error: {error}</p>}
+          {error && <p className="text-red-700">Error: {error}</p>}
 
           {!loading && !error && <ProjectList projects={projects} />}
         </div>

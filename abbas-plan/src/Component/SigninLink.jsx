@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useNavigate } from "react-router-dom"
+import { Link,  useNavigate } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 
 const SigninLink = ({ user }) => {
@@ -14,17 +14,17 @@ const SigninLink = ({ user }) => {
   const initials = user?.email ? user.email.charAt(0).toUpperCase() : "U"
 
   return (
-    <ul className="right">
-      <li><NavLink to='/create'>New Project</NavLink></li>
+    <ul className=" text-white">
+      <li><Link to='/create' className='text-white'>New Project</Link></li>
       <li>
         <button onClick={handleLogout} className="btn pink lighten-1 z-depth-0">
           Log out
         </button>
       </li>
       <li>
-        <NavLink to='/' className='btn btn-floating lighten-1'>
+        <Link to='/' className='btn btn-floating lighten-1'>
           {initials}
-        </NavLink>
+        </Link>
       </li>
     </ul>
   )

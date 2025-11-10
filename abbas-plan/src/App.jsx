@@ -1,8 +1,7 @@
 // Add the missing React import here!
 import React from 'react'; 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {  Routes, Route, BrowserRouter } from 'react-router-dom';
 import Navbar from './Component/Navbar';
-import Dashboard from './Component/Home';
 import ProjectDetail from './Component/ProjectDetail';
 import SignIn from './Component/SignIn';
 import SignUp from './Component/SignUp';
@@ -12,10 +11,10 @@ import CreateProject from './Component/CreateProject';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
+    <BrowserRouter>
+      <div className="w-full min-h-screen">
         <Navbar />
-        <div className="content">
+        <div className="border">
           <Routes>
             {/* Public Routes for now */}
             <Route path="/" element={<Home />} />
@@ -28,7 +27,7 @@ function App() {
           </Routes>
         </div>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

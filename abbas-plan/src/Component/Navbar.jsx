@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import SigninLink from "./SigninLink"
 import SignoutLink from "./SignoutLink"
@@ -23,21 +22,14 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className="nav-wrapper">
+    <nav className="bg-black w-full p-2  ">
 
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        width: '90%', // Keep content slightly narrower than 100%
-        margin: '0 auto', // Center the content horizontally
-        padding: '10px 0' // Add vertical padding
-      }}>
+      <div className='flex justify-between '>
         
-        {/* 1. Logo and Dashboard - Grouped on the Left (or just Logo on left) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-            <Link to='/' className="logo">Snar</Link>
-            <Link to="/dash" style={{ color: 'white', fontSize: '18px' }}>Dashboard</Link>
+
+        <div className='w-full flex items-center gap-6'>
+            <Link to='/' className="text-6xl text-white">Snar</Link>
+            <Link to="/dash" className='text-white text-4xl'>Dashboard</Link>
         </div>
         
         {/* 2. Auth Links - Far Right */}

@@ -5,8 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import App from './App.jsx'
 import './index.css'
-
-// ✅ Make sure this import is correct (no space!)
 import { AuthProvider } from './context/AuthContext'
 
 // Create a React Query client

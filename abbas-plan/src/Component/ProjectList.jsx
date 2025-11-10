@@ -1,4 +1,3 @@
-import React from 'react'
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { Link } from "react-router-dom";
@@ -32,11 +31,11 @@ const ProjectList = () => {
   };
 
   return (
-    <div>
+    <div className=''>
       {projects.length ? (
         projects.map((project) => (
           <Link to={`/project/${project.id}`} key={project.id}>
-            <div className="card">
+            <div className="card grid grid-cols-3">
               <h3>{project.title}</h3>
               {/* ⭐️ Display only the truncated content here ⭐️ */}
               <p>{getSnippet(project.content)}</p>

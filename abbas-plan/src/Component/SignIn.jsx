@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useNavigate } from 'react-router-dom'
@@ -27,7 +26,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="container">
+    <div className="">
       <form onSubmit={handleSignIn} className="white">
         <h5 className="grey-text text-darken-3">Sign In</h5>
 

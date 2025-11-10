@@ -1,5 +1,5 @@
 // src/pages/UserDashboard.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient'; 
 import { User, Mail, LogOut, Package } from 'lucide-react';

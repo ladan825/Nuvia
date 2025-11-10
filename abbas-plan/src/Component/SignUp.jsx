@@ -49,7 +49,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container">
+    <div className="">
       <form onSubmit={handleSignUp} className="white">
         <h5 className="grey-text text-darken-3">Sign Up</h5>
 

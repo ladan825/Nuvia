@@ -35,9 +35,9 @@ const CreateProject = () => {
   }
 
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit} className="white">
-        <h5 className="grey-text text-darken-3">Create Project</h5>
+    <div className="">
+      <form onSubmit={handleSubmit} className="bg-white">
+        <h5 className="text-gray-50 text-darken-3">Create Project</h5>
 
         <div className="input-field">
           <label htmlFor="title">Title</label>
@@ -54,17 +54,17 @@ const CreateProject = () => {
           <label htmlFor="content">Project Content</label>
           <textarea
             id="content"
-            className="materialize-textarea"
+            className=""
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
           />
         </div>
 
-        {error && <p className="red-text">{error}</p>}
+        {error && <p className="text-red-700">{error}</p>}
 
-        <div className="input-field">
-          <button className="btn pink lighten-1 z-depth-0" disabled={loading}>
+        <div className="">
+          <button className="z-0" disabled={loading}>
             {loading ? "Creating..." : "Create"}
           </button>
         </div>
