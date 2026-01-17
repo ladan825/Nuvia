@@ -20,6 +20,16 @@ const Projects = () => {
       // Use your actual live URL here if you have one
       liveDemo: "https://snar-six.vercel.app/", 
     },
+      {
+      id: 2,
+      title: "NativeTreatz - Donkwa E-commerce App",
+      description: "A simple e-commerce app for traditional African snacks built with React and TailwindCSS.",
+      // You must update the 'image' path to match the file name of your Snar screenshot
+      image: "donkwasite.png", 
+      tags: ["React", "Vite", "Supabase", "TailwindCss", "React-Router"],
+      // Use your actual live URL here if you have one
+      liveDemo: "https://nativetreatz.vercel.app/", 
+    },
   ];
 
   return (

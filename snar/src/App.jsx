@@ -7,6 +7,7 @@ import SignUp from "./components/SignUp"
 import ProjectDetail from "./components/ProjectDetail"
 import Dash from "./components/Dash"
 import CreateProject from "./components/CreateProject"
+import EditProject from "./components/EditProject"
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="/dash" element={<Dash />} />
             <Route path="/create" element={<CreateProject />} />
+            <Route path="/edit/:id" element={<EditProject />} />
     </Routes>
    </div>
    </div>

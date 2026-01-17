@@ -1,5 +1,6 @@
+// src/components/Nav.jsx
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "./context/AuthContext"
+import { useAuth } from "./context/AuthContext" // Adjusted path based on your folder structure
 import { ShoppingBag, ShoppingCart, User } from "lucide-react"
 import { motion } from "framer-motion"
 import SpanyLogo from "./assets/Spany601.svg"
@@ -10,7 +11,15 @@ const Nav = () => {
   const navigate = useNavigate()
 
   const [open, setOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0) // State for the badge number
   const dropdownRef = useRef(null)
+
+  // Function to calculate total items in cart
+  const updateCartCount = () => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || []
+    const total = cart.reduce((acc, item) => acc + (item.quantity || 1), 0)
+    setCartCount(total)
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -18,13 +27,24 @@ const Nav = () => {
   }
 
   useEffect(() => {
+    // Initial count
+    updateCartCount()
+
+    // Listen for updates from other components
+    window.addEventListener('cartUpdated', updateCartCount)
+    // Listen for updates from other tabs
+    window.addEventListener('storage', updateCartCount)
+
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
+    
     return () => {
+      window.removeEventListener('cartUpdated', updateCartCount)
+      window.removeEventListener('storage', updateCartCount)
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
@@ -60,7 +80,6 @@ const Nav = () => {
 
       {/* RIGHT: Cart + Account */}
       <div className="flex items-center gap-4 sm:gap-6 text-black">
-        {/* Only show Create button for admin (you) */}
         {user && user.email === 'abbasladan825@gmail.com' && (
           <Link
             to="/create"
@@ -70,15 +89,20 @@ const Nav = () => {
           </Link>
         )}
 
-        {/* Cart */}
         <div className="flex gap-3 sm:gap-4">
+          {/* Cart Icon with Badge */}
           <motion.div
             whileHover={{ scale: 1.2 }}
             transition={{ type: 'spring', stiffness: 300 }}
-            className="cursor-pointer"
+            className="cursor-pointer relative"
           >
             <Link to="/cart">
               <ShoppingCart size={24} className="text-black sm:size-[28px]" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white">
+                  {cartCount}
+                </span>
+              )}
             </Link>
           </motion.div>
 
@@ -127,18 +151,8 @@ const Nav = () => {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/signin"
-                    className="block px-4 py-2 hover:bg-black/10 text-sm"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="block px-4 py-2 hover:bg-black/10 text-sm"
-                  >
-                    Sign Up
-                  </Link>
+                  <Link to="/signin" className="block px-4 py-2 hover:bg-black/10 text-sm">Sign In</Link>
+                  <Link to="/signup" className="block px-4 py-2 hover:bg-black/10 text-sm">Sign Up</Link>
                 </>
               )}
             </motion.div>
