@@ -21,7 +21,7 @@ const Projects = () => {
       liveDemo: "https://snar-six.vercel.app/", 
     },
       {
-      id: 2,
+      id: 3,
       title: "NativeTreatz - Donkwa E-commerce App",
       description: "A simple e-commerce app for traditional African snacks built with React and TailwindCSS.",
       // You must update the 'image' path to match the file name of your Snar screenshot
@@ -29,6 +29,16 @@ const Projects = () => {
       tags: ["React", "Vite", "Supabase", "TailwindCss", "React-Router"],
       // Use your actual live URL here if you have one
       liveDemo: "https://nativetreatz.vercel.app/", 
+    },
+      {
+      id: 4,
+      title: "PhishGuard - Machine Learning Model for Phishing Dectection App",
+      description: "PhishGuard is a full-stack AI-powered phishing email detection system that analyses any email in real time and tells you exactly why it's suspicious. Trained on 24,394 emails using a Voting Ensemble of Random Forest, Logistic Regression, and XGBoost, the model achieves 97.56% detection accuracy with a false negative rate ",
+      // You must update the 'image' path to match the file name of your Snar screenshot
+      image: "phishguard.png", 
+      tags: ["React", "Vite", "Supabase", "TailwindCss", "React-Router", "Machine Learning", "Python", "Flask", "Scikit-Learn", "Render"],
+      // Use your actual live URL here if you have one
+      liveDemo: "https://phishguard-gamma-ten.vercel.app/", 
     },
   ];
 
