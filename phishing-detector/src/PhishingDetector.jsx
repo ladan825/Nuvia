@@ -106,7 +106,7 @@ export default function PhishingDetector() {
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       setHistory(prev => [{ ...data, text, time: timeStr, id: Date.now() }, ...prev.slice(0, 19)])
     } catch {
-      setError('Could not connect to the detection server. Make sure Flask is running.')
+      setError('Server is waking up — this can take up to 60 seconds on the free tier. Please try again in a moment.')
     } finally {
       setLoading(false)
     }
