@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const RISK_LEVELS = {
   LOW:      { label: 'Low Risk',      bar: 'bg-green-500',  text: 'text-green-400',  border: 'border-green-700',  bg: 'bg-green-950/40'  },
-  MEDIUM:   { label: 'Medium Risk',   bar: 'bg-yellow-500', text: 'text-yellow-400', border: 'border-yellow-700', bg: 'bg-yellow-950/40' },
+  MEDIUM:   { label: 'Medium Risk',   bar: 'bg-blue-500',   text: 'text-blue-400',   border: 'border-blue-700',   bg: 'bg-blue-950/40'   },
   HIGH:     { label: 'High Risk',     bar: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-700', bg: 'bg-orange-950/40' },
   CRITICAL: { label: 'Critical Risk', bar: 'bg-red-500',    text: 'text-red-400',    border: 'border-red-700',    bg: 'bg-red-950/40'    },
 }
