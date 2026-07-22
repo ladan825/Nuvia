@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 
+const API = 'https://phishguard-api-nwz0.onrender.com'
+
 const RISK_LEVELS = {
-  LOW:      { label: 'Low Risk',      bar: 'bg-green-500',  text: 'text-green-400',  border: 'border-green-700',  bg: 'bg-green-950/40'  },
-  MEDIUM:   { label: 'Medium Risk',   bar: 'bg-blue-500',   text: 'text-blue-400',   border: 'border-blue-700',   bg: 'bg-blue-950/40'   },
-  HIGH:     { label: 'High Risk',     bar: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-700', bg: 'bg-orange-950/40' },
-  CRITICAL: { label: 'Critical Risk', bar: 'bg-red-500',    text: 'text-red-400',    border: 'border-red-700',    bg: 'bg-red-950/40'    },
+  LOW:      { label: 'Low Risk',      bar: 'bg-green-500',  text: 'text-green-400',  border: 'border-green-700'  },
+  MEDIUM:   { label: 'Medium Risk',   bar: 'bg-blue-500',   text: 'text-blue-400',   border: 'border-blue-700'   },
+  HIGH:     { label: 'High Risk',     bar: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-700' },
+  CRITICAL: { label: 'Critical Risk', bar: 'bg-red-500',    text: 'text-red-400',    border: 'border-red-700'    },
 }
 
 function getRisk(result, confidence) {
@@ -12,6 +14,17 @@ function getRisk(result, confidence) {
   if (confidence >= 90) return 'CRITICAL'
   if (confidence >= 75) return 'HIGH'
   return 'MEDIUM'
+}
+
+function PhishGuardLogo({ size = 36 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 2L4 7.5V17C4 24.5 10 31 18 34C26 31 32 24.5 32 17V7.5L18 2Z" fill="#1D4ED8" stroke="#3B82F6" strokeWidth="1"/>
+      <path d="M18 9 C18 9, 18 18, 18 20 C18 23, 22 24, 22 21 C22 19, 20 19, 20 21" stroke="white" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
+      <path d="M20 21 L23 20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="18" cy="8.5" r="1.5" fill="white"/>
+    </svg>
+  )
 }
 
 function RiskMeter({ confidence, result }) {
@@ -31,8 +44,7 @@ function RiskMeter({ confidence, result }) {
         <div className={`absolute top-0 h-full rounded-full opacity-40 blur-sm transition-all duration-1000 ${level.bar}`} style={{ width: `${percent}%` }} />
       </div>
       <div className="flex justify-between text-xs text-gray-600 mt-1">
-        <span>Safe</span>
-        <span>Dangerous</span>
+        <span>Safe</span><span>Dangerous</span>
       </div>
     </div>
   )
@@ -41,9 +53,7 @@ function RiskMeter({ confidence, result }) {
 function KeywordBadge({ word, isPhishing }) {
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-      isPhishing
-        ? 'bg-red-900/40 border-red-700 text-red-300'
-        : 'bg-green-900/40 border-green-700 text-green-300'
+      isPhishing ? 'bg-red-900/40 border-red-700 text-red-300' : 'bg-green-900/40 border-green-700 text-green-300'
     }`}>
       {isPhishing ? '⚠️' : '✅'} {word}
     </span>
@@ -52,21 +62,17 @@ function KeywordBadge({ word, isPhishing }) {
 
 function HistoryItem({ item, onClick }) {
   const isPhishing = item.result === 'PHISHING'
+  const displayText = (item.text || item.email_text || '').slice(0, 55)
   return (
-    <div
-      onClick={() => onClick(item)}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer hover:bg-gray-800 transition-all duration-200 ${
-        isPhishing ? 'border-red-900/60 bg-red-950/20' : 'border-green-900/60 bg-green-950/20'
-      }`}
-    >
+    <div onClick={() => onClick(item)} className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer hover:bg-gray-800 transition-all duration-200 ${isPhishing ? 'border-red-900/60 bg-red-950/20' : 'border-green-900/60 bg-green-950/20'}`}>
       <span className="text-lg">{isPhishing ? '🚨' : '✅'}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-300 truncate">{item.text.slice(0, 55)}...</p>
+        <p className="text-sm text-gray-300 truncate">{displayText}...</p>
         <p className={`text-xs mt-0.5 font-semibold ${isPhishing ? 'text-red-400' : 'text-green-400'}`}>
           {isPhishing ? 'Phishing' : 'Safe'} · {item.confidence}% confidence
         </p>
       </div>
-      <span className="text-xs text-gray-600 shrink-0">{item.time}</span>
+      <span className="text-xs text-gray-600 shrink-0">{item.time || item.timestamp?.slice(11,16) || ''}</span>
     </div>
   )
 }
@@ -81,6 +87,22 @@ export default function PhishingDetector() {
   const [darkMode, setDarkMode] = useState(true)
   const [animateResult, setAnimateResult] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [explanation, setExplanation] = useState(null)
+  const [loadingExplanation, setLoadingExplanation] = useState(false)
+
+  useEffect(() => {
+    fetch(`${API}/history`)
+      .then(res => res.json())
+      .then(data => {
+        setHistory(data.map(item => ({
+          ...item,
+          text: item.email_text || '',
+          keywords: item.keywords ? item.keywords.split(', ') : [],
+          time: item.timestamp?.slice(11, 16) || '',
+        })))
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (result) {
@@ -89,22 +111,47 @@ export default function PhishingDetector() {
     }
   }, [result])
 
+  const getExplanation = async (emailText, result, confidence) => {
+    setLoadingExplanation(true)
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 150,
+          messages: [{
+            role: 'user',
+            content: `You are a cybersecurity assistant. Analyse this email and explain in 2 sentences why it is ${result} (confidence: ${confidence}%). Be specific about the email content, not generic. Email: "${emailText.slice(0, 300)}"`
+          }]
+        })
+      })
+      const data = await response.json()
+      setExplanation(data.content?.[0]?.text || null)
+    } catch {
+      setExplanation(null)
+    } finally {
+      setLoadingExplanation(false)
+    }
+  }
+
   const analyzeEmail = async () => {
     if (!text.trim()) return
     setLoading(true)
     setResult(null)
     setError(null)
+    setExplanation(null)
     try {
-      const response = await fetch('https://phishguard-api-nwz0.onrender.com/predict', {
+      const response = await fetch(`${API}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text })
       })
       const data = await response.json()
       setResult(data)
-      const now = new Date()
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       setHistory(prev => [{ ...data, text, time: timeStr, id: Date.now() }, ...prev.slice(0, 19)])
+      getExplanation(text, data.result, data.confidence)
     } catch {
       setError('Server is waking up — this can take up to 60 seconds on the free tier. Please try again in a moment.')
     } finally {
@@ -112,19 +159,19 @@ export default function PhishingDetector() {
     }
   }
 
-  const reset = () => { setText(''); setResult(null); setError(null) }
+  const reset = () => { setText(''); setResult(null); setError(null); setExplanation(null) }
 
   const copyResult = () => {
     if (!result) return
-    const kw = result.keywords?.join(', ') || 'none'
-    navigator.clipboard.writeText(`PhishGuard Result\nStatus: ${result.result}\nConfidence: ${result.confidence}%\nKey Indicators: ${kw}`)
+    navigator.clipboard.writeText(`PhishGuard Result\nStatus: ${result.result}\nConfidence: ${result.confidence}%\nKeywords: ${result.keywords?.join(', ') || 'none'}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const loadFromHistory = (item) => {
-    setText(item.text)
-    setResult({ result: item.result, confidence: item.confidence, keywords: item.keywords })
+    setText(item.text || item.email_text || '')
+    setResult({ result: item.result, confidence: item.confidence, keywords: item.keywords || [] })
+    setExplanation(null)
     setShowHistory(false)
   }
 
@@ -142,9 +189,10 @@ export default function PhishingDetector() {
         </div>
       )}
 
-      {/* Header */}
       <header className={`relative z-10 border-b ${darkMode ? 'border-gray-800/80' : 'border-gray-200'} px-6 py-4 flex items-center gap-3`}>
-        <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/40">🛡️</div>
+        <div className="w-9 h-9 bg-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/50">
+          <PhishGuardLogo size={26} />
+        </div>
         <div>
           <span className="font-black text-lg tracking-tight">PhishGuard</span>
           <span className={`text-xs ml-2 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>Cybersecurity Science · FUT Minna</span>
@@ -154,16 +202,10 @@ export default function PhishingDetector() {
             <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse inline-block" />
             Model Active
           </span>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`text-xs px-3 py-1.5 rounded-lg transition ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}
-          >
+          <button onClick={() => setDarkMode(!darkMode)} className={`text-xs px-3 py-1.5 rounded-lg transition ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}>
             {darkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
-          <button
-            onClick={() => setShowHistory(!showHistory)}
-            className={`relative text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-400' : 'bg-gray-200 hover:bg-gray-300 text-gray-600'}`}
-          >
+          <button onClick={() => setShowHistory(!showHistory)} className={`relative text-xs px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-400' : 'bg-gray-200 hover:bg-gray-300 text-gray-600'}`}>
             📋 History
             {history.length > 0 && (
               <span className="bg-blue-600 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -175,8 +217,6 @@ export default function PhishingDetector() {
       </header>
 
       <main className="relative z-10 flex-1 flex flex-col lg:flex-row gap-6 px-4 md:px-8 py-10 max-w-6xl mx-auto w-full">
-
-        {/* Left */}
         <div className="flex-1 flex flex-col gap-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">
@@ -187,7 +227,6 @@ export default function PhishingDetector() {
             </p>
           </div>
 
-          {/* Input */}
           <div className={`border rounded-2xl p-5 shadow-2xl ${card}`}>
             <div className="flex items-center justify-between mb-3">
               <label className={`text-sm font-semibold ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email Content</label>
@@ -200,11 +239,7 @@ export default function PhishingDetector() {
               onChange={(e) => setText(e.target.value)}
             />
             <div className="flex gap-3 mt-4">
-              <button
-                onClick={analyzeEmail}
-                disabled={loading || !text.trim()}
-                className="flex-1 bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-900/30"
-              >
+              <button onClick={analyzeEmail} disabled={loading || !text.trim()} className="flex-1 bg-blue-600 hover:bg-blue-500 active:scale-95 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-900/30">
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -216,25 +251,19 @@ export default function PhishingDetector() {
                 ) : '🔍 Analyse Email'}
               </button>
               {(result || text) && (
-                <button onClick={reset} className={`px-5 font-semibold py-3 rounded-xl transition-all active:scale-95 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}>
-                  Clear
-                </button>
+                <button onClick={reset} className={`px-5 font-semibold py-3 rounded-xl transition-all active:scale-95 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-200 hover:bg-gray-300 text-gray-700'}`}>Clear</button>
               )}
             </div>
           </div>
 
-          {/* Error */}
           {error && (
             <div className="bg-red-950/60 border border-red-800 text-red-300 rounded-xl px-5 py-4 text-sm flex gap-3 items-start">
               <span className="text-lg">⚠️</span><span>{error}</span>
             </div>
           )}
 
-          {/* Result */}
           {result && (
             <div className={`rounded-2xl border p-6 shadow-2xl transition-all duration-500 ${animateResult ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${isPhishing ? 'bg-red-950/40 border-red-800/70' : 'bg-green-950/40 border-green-800/70'}`}>
-
-              {/* Top row */}
               <div className="flex items-start gap-4">
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-lg shrink-0 ${isPhishing ? 'bg-red-900/60 animate-pulse' : 'bg-green-900/60'}`}>
                   {isPhishing ? '🚨' : '✅'}
@@ -247,36 +276,41 @@ export default function PhishingDetector() {
                     Confidence: <span className="text-white font-bold">{result.confidence}%</span>
                   </div>
                 </div>
-                <button
-                  onClick={copyResult}
-                  className="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition flex items-center gap-1.5"
-                >
+                <button onClick={copyResult} className="shrink-0 text-xs px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition">
                   {copied ? '✅ Copied' : '📋 Copy'}
                 </button>
               </div>
 
-              {/* Risk meter */}
               <RiskMeter confidence={result.confidence} result={result.result} />
 
-              {/* Keywords */}
+              <div className={`mt-4 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/20 border-red-800/40' : 'bg-green-900/20 border-green-800/40'}`}>
+                <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-400' : 'text-green-400'}`}>🧠 AI Analysis</p>
+                {loadingExplanation ? (
+                  <div className="flex items-center gap-2">
+                    <svg className="animate-spin h-3 w-3 text-gray-500" viewBox="0 0 24 24" fill="none">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    <span className="text-xs text-gray-500">Generating explanation...</span>
+                  </div>
+                ) : explanation ? (
+                  <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{explanation}</p>
+                ) : (
+                  <p className="text-xs text-gray-500">Analysis unavailable.</p>
+                )}
+              </div>
+
               {result.keywords && result.keywords.length > 0 && (
-                <div className={`mt-4 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/20 border-red-800/40' : 'bg-green-900/20 border-green-800/40'}`}>
-                  <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-400' : 'text-green-400'}`}>
-                    {isPhishing ? '⚠️ Why this is suspicious' : '✅ Why this looks legitimate'}
+                <div className={`mt-3 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/10 border-red-900/30' : 'bg-green-900/10 border-green-900/30'}`}>
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-500' : 'text-green-500'}`}>
+                    {isPhishing ? '⚠️ Flagged Terms' : '✅ Legitimate Indicators'}
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-2">
+                  <div className="flex flex-wrap gap-2">
                     {result.keywords.map((kw, i) => <KeywordBadge key={i} word={kw} isPhishing={isPhishing} />)}
                   </div>
-                  <p className="text-xs text-gray-500">
-                    {isPhishing
-                      ? 'These words and phrases are strongly associated with phishing emails in the model\'s training data.'
-                      : 'These words and phrases are commonly found in legitimate emails and contributed to the safe classification.'
-                    }
-                  </p>
                 </div>
               )}
 
-              {/* Caution messages */}
               {isPhishing && (
                 <div className="mt-4 bg-red-900/20 border border-red-800/40 rounded-xl px-4 py-3 text-sm text-red-300 leading-relaxed">
                   ⛔ <strong>Do not</strong> click any links, download attachments, or provide personal information such as BVN, NIN, passwords, or bank details. Report this email to your institution's IT security team.
@@ -288,25 +322,24 @@ export default function PhishingDetector() {
                 </div>
               )}
               {!isPhishing && result.confidence < 80 && (
-                <div className="mt-4 bg-yellow-900/20 border border-yellow-800/40 rounded-xl px-4 py-3 text-sm text-yellow-300 leading-relaxed">
-                  ⚠️ The model is moderately confident this is safe but the result is borderline. Verify the sender's email address carefully before responding or clicking any links.
+                <div className="mt-4 bg-blue-900/20 border border-blue-800/40 rounded-xl px-4 py-3 text-sm text-blue-300 leading-relaxed">
+                  ℹ️ The model is moderately confident this is safe but borderline. Verify the sender carefully before responding.
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* Right panel */}
         <div className="lg:w-72 flex flex-col gap-4">
           <div className={`border rounded-2xl p-5 ${card}`}>
             <h3 className={`text-xs font-bold uppercase tracking-widest mb-4 ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>Model Stats</h3>
             <div className="space-y-4">
               {[
-                { label: 'Training Emails', value: '24,394',         icon: '📧' },
-                { label: 'Accuracy',        value: '97.56%',         icon: '🎯' },
-                { label: 'False Negatives', value: '32',             icon: '🔒' },
+                { label: 'Training Emails', value: '24,394',          icon: '📧' },
+                { label: 'Accuracy',        value: '97.56%',          icon: '🎯' },
+                { label: 'False Negatives', value: '32',              icon: '🔒' },
                 { label: 'Algorithm',       value: 'Voting Ensemble', icon: '🌲' },
-                { label: 'Datasets',        value: '2 + Nigerian',   icon: '🗄️' },
+                { label: 'Datasets',        value: '2 + Nigerian',    icon: '🗄️' },
               ].map(stat => (
                 <div key={stat.label} className="flex items-center gap-3">
                   <span className="text-lg">{stat.icon}</span>
@@ -354,7 +387,6 @@ export default function PhishingDetector() {
         </div>
       </main>
 
-      {/* History drawer */}
       {showHistory && (
         <div className="fixed inset-0 z-50 flex">
           <div className="flex-1 bg-black/60 backdrop-blur-sm" onClick={() => setShowHistory(false)} />
