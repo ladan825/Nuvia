@@ -16,10 +16,10 @@ function getRisk(result, confidence) {
   return 'MEDIUM'
 }
 
-function PhishGuardLogo({ size = 36 }) {
+function HydraGuardLogo({ size = 28 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18 2L4 7.5V17C4 24.5 10 31 18 34C26 31 32 24.5 32 17V7.5L18 2Z" fill="#1D4ED8" stroke="#3B82F6" strokeWidth="1"/>
+      <path d="M18 2L4 7.5V17C4 24.5 10 31 18 34C26 31 32 24.5 32 17V7.5L18 2Z" fill="#6D28D9" stroke="#A78BFA" strokeWidth="1"/>
       <path d="M18 9 C18 9, 18 18, 18 20 C18 23, 22 24, 22 21 C22 19, 20 19, 20 21" stroke="white" strokeWidth="2.2" strokeLinecap="round" fill="none"/>
       <path d="M20 21 L23 20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
       <circle cx="18" cy="8.5" r="1.5" fill="white"/>
@@ -87,20 +87,16 @@ export default function PhishingDetector() {
   const [darkMode, setDarkMode] = useState(true)
   const [animateResult, setAnimateResult] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [explanation, setExplanation] = useState(null)
-  const [loadingExplanation, setLoadingExplanation] = useState(false)
 
   useEffect(() => {
     fetch(`${API}/history`)
       .then(res => res.json())
-      .then(data => {
-        setHistory(data.map(item => ({
-          ...item,
-          text: item.email_text || '',
-          keywords: item.keywords ? item.keywords.split(', ') : [],
-          time: item.timestamp?.slice(11, 16) || '',
-        })))
-      })
+      .then(data => setHistory(data.map(item => ({
+        ...item,
+        text: item.email_text || item.text || '',
+        keywords: Array.isArray(item.keywords) ? item.keywords : (item.keywords ? item.keywords.split(', ') : []),
+        time: item.timestamp?.slice(11, 16) || '',
+      }))))
       .catch(() => {})
   }, [])
 
@@ -111,36 +107,11 @@ export default function PhishingDetector() {
     }
   }, [result])
 
-  const getExplanation = async (emailText, result, confidence) => {
-    setLoadingExplanation(true)
-    try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 150,
-          messages: [{
-            role: 'user',
-            content: `You are a cybersecurity assistant. Analyse this email and explain in 2 sentences why it is ${result} (confidence: ${confidence}%). Be specific about the email content, not generic. Email: "${emailText.slice(0, 300)}"`
-          }]
-        })
-      })
-      const data = await response.json()
-      setExplanation(data.content?.[0]?.text || null)
-    } catch {
-      setExplanation(null)
-    } finally {
-      setLoadingExplanation(false)
-    }
-  }
-
   const analyzeEmail = async () => {
     if (!text.trim()) return
     setLoading(true)
     setResult(null)
     setError(null)
-    setExplanation(null)
     try {
       const response = await fetch(`${API}/predict`, {
         method: 'POST',
@@ -151,7 +122,6 @@ export default function PhishingDetector() {
       setResult(data)
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       setHistory(prev => [{ ...data, text, time: timeStr, id: Date.now() }, ...prev.slice(0, 19)])
-      getExplanation(text, data.result, data.confidence)
     } catch {
       setError('Server is waking up — this can take up to 60 seconds on the free tier. Please try again in a moment.')
     } finally {
@@ -159,19 +129,18 @@ export default function PhishingDetector() {
     }
   }
 
-  const reset = () => { setText(''); setResult(null); setError(null); setExplanation(null) }
+  const reset = () => { setText(''); setResult(null); setError(null) }
 
   const copyResult = () => {
     if (!result) return
-    navigator.clipboard.writeText(`PhishGuard Result\nStatus: ${result.result}\nConfidence: ${result.confidence}%\nKeywords: ${result.keywords?.join(', ') || 'none'}`)
+    navigator.clipboard.writeText(`PhishGuard Result\nStatus: ${result.result}\nConfidence: ${result.confidence}%\nExplanation: ${result.explanation || 'N/A'}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const loadFromHistory = (item) => {
     setText(item.text || item.email_text || '')
-    setResult({ result: item.result, confidence: item.confidence, keywords: item.keywords || [] })
-    setExplanation(null)
+    setResult({ result: item.result, confidence: item.confidence, keywords: item.keywords || [], explanation: item.explanation || null })
     setShowHistory(false)
   }
 
@@ -190,8 +159,8 @@ export default function PhishingDetector() {
       )}
 
       <header className={`relative z-10 border-b ${darkMode ? 'border-gray-800/80' : 'border-gray-200'} px-6 py-4 flex items-center gap-3`}>
-        <div className="w-9 h-9 bg-blue-700 rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/50">
-          <PhishGuardLogo size={26} />
+        <div className="w-9 h-9 bg-purple-700 rounded-xl ...">
+  <HydraGuardLogo size={26} />
         </div>
         <div>
           <span className="font-black text-lg tracking-tight">PhishGuard</span>
@@ -264,6 +233,7 @@ export default function PhishingDetector() {
 
           {result && (
             <div className={`rounded-2xl border p-6 shadow-2xl transition-all duration-500 ${animateResult ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${isPhishing ? 'bg-red-950/40 border-red-800/70' : 'bg-green-950/40 border-green-800/70'}`}>
+
               <div className="flex items-start gap-4">
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-lg shrink-0 ${isPhishing ? 'bg-red-900/60 animate-pulse' : 'bg-green-900/60'}`}>
                   {isPhishing ? '🚨' : '✅'}
@@ -283,27 +253,19 @@ export default function PhishingDetector() {
 
               <RiskMeter confidence={result.confidence} result={result.result} />
 
-              <div className={`mt-4 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/20 border-red-800/40' : 'bg-green-900/20 border-green-800/40'}`}>
-                <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-400' : 'text-green-400'}`}>🧠 AI Analysis</p>
-                {loadingExplanation ? (
-                  <div className="flex items-center gap-2">
-                    <svg className="animate-spin h-3 w-3 text-gray-500" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    <span className="text-xs text-gray-500">Generating explanation...</span>
-                  </div>
-                ) : explanation ? (
-                  <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{explanation}</p>
-                ) : (
-                  <p className="text-xs text-gray-500">Analysis unavailable.</p>
-                )}
-              </div>
+              {/* AI Explanation */}
+              {result.explanation && (
+                <div className={`mt-4 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/20 border-red-800/40' : 'bg-green-900/20 border-green-800/40'}`}>
+                  <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-400' : 'text-green-400'}`}>🧠 AI Analysis</p>
+                  <p className={`text-sm leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{result.explanation}</p>
+                </div>
+              )}
 
+              {/* SHAP Keywords */}
               {result.keywords && result.keywords.length > 0 && (
                 <div className={`mt-3 rounded-xl px-4 py-3 border ${isPhishing ? 'bg-red-900/10 border-red-900/30' : 'bg-green-900/10 border-green-900/30'}`}>
                   <p className={`text-xs font-bold uppercase tracking-widest mb-2 ${isPhishing ? 'text-red-500' : 'text-green-500'}`}>
-                    {isPhishing ? '⚠️ Flagged Terms' : '✅ Legitimate Indicators'}
+                    {isPhishing ? '⚠️ Key Suspicious Terms' : '✅ Key Legitimate Terms'}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {result.keywords.map((kw, i) => <KeywordBadge key={i} word={kw} isPhishing={isPhishing} />)}
@@ -323,7 +285,7 @@ export default function PhishingDetector() {
               )}
               {!isPhishing && result.confidence < 80 && (
                 <div className="mt-4 bg-blue-900/20 border border-blue-800/40 rounded-xl px-4 py-3 text-sm text-blue-300 leading-relaxed">
-                  ℹ️ The model is moderately confident this is safe but borderline. Verify the sender carefully before responding.
+                  ℹ️ The model is moderately confident this is safe but the result is borderline. Verify the sender carefully before responding.
                 </div>
               )}
             </div>
