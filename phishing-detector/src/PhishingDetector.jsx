@@ -163,7 +163,7 @@ export default function PhishingDetector() {
   <HydraGuardLogo size={26} />
         </div>
         <div>
-          <span className="font-black text-lg tracking-tight">PhishGuard</span>
+          <span className="font-black text-lg tracking-tight">HydraGuard</span>
           <span className={`text-xs ml-2 ${darkMode ? 'text-gray-600' : 'text-gray-400'}`}>Cybersecurity Science · FUT Minna</span>
         </div>
         <div className="ml-auto flex items-center gap-3">
