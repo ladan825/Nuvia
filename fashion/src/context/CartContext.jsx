@@ -1,58 +1,64 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
+const STORAGE_KEY = "vogmoda-cart";
 
 export function CartProvider({ children }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch {
+      return [];
+    }
+  });
 
-  const addToCart = (product) => {
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (product, size) => {
+    const key = `${product.id}-${size}`;
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
+      const existing = prev.find((i) => i.key === key);
       if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+        return prev.map((i) => (i.key === key ? { ...i, quantity: i.quantity + 1 } : i));
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [
+        ...prev,
+        {
+          key,
+          id: product.id,
+          name: product.name,
+          price_ngn: product.price_ngn,
+          image_url: product.image_url,
+          size,
+          quantity: 1,
+        },
+      ];
     });
     setIsCartOpen(true);
   };
 
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (key) =>
+    setCartItems((prev) => prev.map((i) => (i.key === key ? { ...i, quantity: i.quantity + 1 } : i)));
+
+  const decreaseQuantity = (key) =>
     setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
+      prev.map((i) => (i.key === key ? { ...i, quantity: i.quantity - 1 } : i)).filter((i) => i.quantity > 0)
     );
-  };
 
-  const decreaseQuantity = (id) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) => (item.id === id ? { ...item, quantity: item.quantity - 1 } : item))
-        .filter((item) => item.quantity > 0)
-    );
-  };
+  const removeFromCart = (key) => setCartItems((prev) => prev.filter((i) => i.key !== key));
+  const clearCart = () => setCartItems([]);
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const total = cartItems.reduce((sum, item) => {
-    const price = parseFloat(item.price.replace("$", ""));
-    return sum + price * item.quantity;
-  }, 0);
+  const count = cartItems.reduce((s, i) => s + i.quantity, 0);
+  const total = cartItems.reduce((s, i) => s + i.price_ngn * i.quantity, 0);
 
   return (
     <CartContext.Provider
       value={{
-        isCartOpen,
-        setIsCartOpen,
-        cartItems,
-        addToCart,
-        removeFromCart,
-        increaseQuantity,
-        decreaseQuantity,
-        total,
+        isCartOpen, setIsCartOpen, cartItems, count, total,
+        addToCart, increaseQuantity, decreaseQuantity, removeFromCart, clearCart,
       }}
     >
       {children}
@@ -60,6 +66,4 @@ export function CartProvider({ children }) {
   );
 }
 
-export function useCart() {
-  return useContext(CartContext);
-}
+export const useCart = () => useContext(CartContext);

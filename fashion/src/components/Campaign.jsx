@@ -1,10 +1,10 @@
 import ProductCard from "./ProductCard";
-import products from "../data/products";
+import { useProducts } from "../hooks/useProducts";
 
-const Campaign = () => {
-  const womenPicks = products.filter((p) => p.category === "women").slice(0, 2);
-  const menPicks = products.filter((p) => p.category === "men").slice(0, 2);
-  const featured = [...womenPicks, ...menPicks];
+export default function Campaign() {
+  const women = useProducts({ audience: "women", category: "native", limit: 2 });
+  const men = useProducts({ audience: "men", category: "native", limit: 2 });
+  const featured = [...(women.data ?? []), ...(men.data ?? [])];
 
   return (
     <section className="bg-white py-20 px-4 sm:px-6 lg:px-8">
@@ -17,18 +17,12 @@ const Campaign = () => {
         </p>
 
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featured.map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              price={product.price}
-              image={product.image}
-            />
+          {featured.map((p) => (
+            <ProductCard key={p.id} {...p} />
           ))}
         </div>
 
-        <p className="font-sans mt-16 max-w-2xl mx-auto text-center text-gray-600 leading-relaxed">
+        <p className="mt-16 max-w-2xl mx-auto text-center text-gray-600 leading-relaxed">
           This season draws on quiet luxury and considered tailoring — pieces
           built to move seamlessly from day to evening, made to be worn for
           years, not seasons.
@@ -36,6 +30,4 @@ const Campaign = () => {
       </div>
     </section>
   );
-};
-
-export default Campaign;
+}

@@ -1,39 +1,26 @@
-import { Link } from "react-router-dom"; 
- 
-const Gender = () => { 
-  return ( 
-    <section className="w-full flex"> 
-       
-      {/* Men */} 
-      <Link to="/men" className="flex-1 flex flex-col items-center group"> 
-        <div className="w-full aspect-[3/4] overflow-hidden"> 
-          <img 
-            src="/pic/m1.jpeg" 
-            alt="Men's Collection" 
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-700" 
-          /> 
-        </div> 
-        <h2 className="font-heading mt-6  text-2xl tracking-wide text-gray-900"> 
-          Men 
-        </h2> 
-      </Link> 
- 
-      {/* Women */} 
-      <Link to="/women" className="flex-1 flex flex-col items-center group"> 
-        <div className="w-full aspect-[3/4] overflow-hidden"> 
-          <img 
-            src="/pic/f6.jpeg" 
-            alt="Women's Collection" 
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-700" 
-          /> 
-        </div> 
-        <h2 className="font-heading mt-6 text-2xl tracking-wide text-gray-900"> 
-          Women 
-        </h2> 
-      </Link> 
- 
-    </section> 
-  ); 
-}; 
- 
-export default Gender;
+import { Link } from "react-router-dom";
+
+const items = [
+  { to: "/shop/men", label: "Men", img: "/men.jpeg" },
+  { to: "/shop/women", label: "Women", img: "/women.jpeg" },
+  { to: "/shop/kids", label: "Kids", img: "/kids.jpeg" },
+];
+
+export default function Gender() {
+  return (
+    <section className="w-full grid grid-cols-1 md:grid-cols-3">
+      {items.map((i) => (
+        <Link key={i.to} to={i.to} className="flex flex-col items-center group">
+          <div className="w-full h-[50vh] md:h-[70vh] overflow-hidden">
+            <img
+              src={i.img}
+              alt={`${i.label} collection`}
+              className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-700"
+            />
+          </div>
+          <h2 className="my-6 font-heading text-2xl tracking-wide text-gray-900">{i.label}</h2>
+        </Link>
+      ))}
+    </section>
+  );
+}

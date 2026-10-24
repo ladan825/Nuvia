@@ -1,23 +1,19 @@
-import BrandStory from "./BrandStory";
 import Hero from "./Hero";
 import Gender from "./Gender";
-import Campaign from "./Campaign";
 import NewInMen from "./NewInMen";
-import CartDrawer from "./Cart";
+import Campaign from "./Campaign";
+import BrandStory from "./BrandStory";
+import Showcase from "./Showcase";
 
-
-function Home() {
+export default function Home() {
   return (
     <>
       <Hero />
       <Gender />
       <NewInMen />
       <Campaign />
+      <Showcase /> 
       <BrandStory />
-      <CartDrawer />
-      
     </>
   );
 }
-
-export default Home;
