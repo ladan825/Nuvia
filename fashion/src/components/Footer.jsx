@@ -7,6 +7,13 @@ const socialClass =
   "w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-700 hover:bg-black hover:text-white hover:border-black transition duration-300";
 const headingClass = "text-sm uppercase tracking-widest font-semibold mb-1";
 
+const policyLinks = [
+  { to: "/policies/refund-policy", label: "Refund Policy" },
+  { to: "/policies/privacy-policy", label: "Privacy Policy" },
+  { to: "/policies/delivery-policy", label: "Delivery Policy" },
+  { to: "/policies/terms-and-conditions", label: "Terms & Conditions" },
+];
+
 export default function Footer() {
   return (
     <footer className="w-full pt-20 pb-8 px-6 border-t border-gray-200 bg-white">
@@ -22,6 +29,9 @@ export default function Footer() {
           <h3 className={headingClass}>About</h3>
           <Link to="/about" className={linkClass}>Our Story</Link>
           <Link to="/orders" className={linkClass}>My Orders</Link>
+          {policyLinks.map((p) => (
+            <Link key={p.to} to={p.to} className={linkClass}>{p.label}</Link>
+          ))}
         </div>
 
         <div className="flex flex-col gap-4 col-span-2 md:col-span-1">
@@ -42,42 +52,19 @@ export default function Footer() {
             <span>+234 813 848 0567</span>
           </a>
 
-          <a
-            href="https://wa.me/2348138480567"
-            target="_blank"
-            rel="noreferrer"
-            className={rowClass}
-          >
+          <a href="https://wa.me/2348138480567" target="_blank" rel="noreferrer" className={rowClass}>
             <FaWhatsapp size={17} className="mt-0.5 flex-shrink-0" />
             <span>Chat on WhatsApp</span>
           </a>
 
           <div className="flex gap-3 mt-2">
-            <a
-              href="https://www.tiktok.com/@vogmoda_"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="TikTok"
-              className={socialClass}
-            >
+            <a href="https://www.tiktok.com/@vogmoda_" target="_blank" rel="noreferrer" aria-label="TikTok" className={socialClass}>
               <FaTiktok size={16} />
             </a>
-            <a
-              href="https://www.instagram.com/vogmoda_"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className={socialClass}
-            >
+            <a href="https://www.instagram.com/vogmoda_" target="_blank" rel="noreferrer" aria-label="Instagram" className={socialClass}>
               <FaInstagram size={17} />
             </a>
-            <a
-              href="https://wa.me/2348138480567"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="WhatsApp"
-              className={socialClass}
-            >
+            <a href="https://wa.me/2348138480567" target="_blank" rel="noreferrer" aria-label="WhatsApp" className={socialClass}>
               <FaWhatsapp size={18} />
             </a>
           </div>
@@ -102,11 +89,14 @@ export default function Footer() {
       <h1 className="font-brand text-[14vw] md:text-[10vw] leading-none tracking-tight uppercase text-center">
         VOGMODA
       </h1>
-      <h2 className="font-brand  text-center text-l text-black mt-2">Crafted with care, worn with Confidence</h2>
 
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between gap-2 text-xs text-gray-500 mt-8 pt-6 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-4 text-xs text-gray-500 mt-8 pt-6 border-t border-gray-100">
         <span>© {new Date().getFullYear()} VOGMODA. All rights reserved.</span>
-        <span>Privacy · Terms</span>
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          {policyLinks.map((p) => (
+            <Link key={p.to} to={p.to} className="hover:text-black transition">{p.label}</Link>
+          ))}
+        </div>
       </div>
     </footer>
   );

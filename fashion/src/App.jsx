@@ -14,6 +14,7 @@ import OrderSuccess from "./components/OrderSuccess";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CartDrawer from "./components/Cart";
 import NavBar from "./Nav";
+import Policy from "./components/Policy";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Auth mode="login" />} />
             <Route path="/signup" element={<Auth mode="signup" />} />
+             <Route path="/policies/:slug" element={<Policy />} />
             <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
             <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/order-success/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
